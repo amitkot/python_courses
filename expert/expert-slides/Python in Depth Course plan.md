@@ -3,9 +3,6 @@
 mdc: true
 title: "Python in Depth - course plan"
 # theme: apple-basic
----
-
----
 layout: cover
 class: text-center
 ---
@@ -13,10 +10,10 @@ class: text-center
 # Python in Depth
 ## Course Plan
 
-<p>
+<p/>
+
 <div class="text-xl font-semibold">Amit Kotlovski</div>
 <div class="text-base"><a href="mailto:amit@amitkot.com">amit@amitkot.com</a></div>
-</p>
 
 ---
 
