@@ -1,0 +1,8 @@
+{
+  "name": "slidev-addon-amit-fit",
+  "private": true,
+  "version": "0.1.0",
+  "keywords": ["slidev-addon", "slidev"],
+  "type": "module"
+}
+
