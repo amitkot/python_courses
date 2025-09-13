@@ -55,6 +55,12 @@ title: Day 3 — OOP Mastery
 layout: bullets-fit
 title: Day 4 — Metaprogramming & Practice
 ---
+<!-- Optional per-slide overrides: -->
+<!-- # titleHeight: 10vh -->
+<!-- # titleHeight: 12vh -->
+<!-- # titleMin: 28 -->
+<!-- # titleMax: 60 -->
+<!-- # titlePad: 8 -->
 
 - Metaclasses
 - getattr / getattribute
