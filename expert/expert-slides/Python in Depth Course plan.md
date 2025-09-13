@@ -1,22 +1,25 @@
 ---
 # enable MDC Syntax: https://sli.dev/features/mdc
 mdc: true
-title: "Python in Depth - course plan"
-layout: cover
 class: text-center
 theme: apple-basic
 addons:
   - ./addons/amit-fit
 
+layout: cover-fit
+title: Python in Depth
+subtitle: Course Plan
+by: Amit Kotlovski
+email: amit@amitkot.com
 ---
-
-# Python in Depth
-## Course Plan
-
-<p/>
-
-<div class="text-xl font-semibold">Amit Kotlovski</div>
-<div class="text-base"><a href="mailto:amit@amitkot.com">amit@amitkot.com</a></div>
+<!-- # Optional extras: -->
+<!-- # org: "amitkot.com" -->
+<!-- # website: "https://amitkot.com" -->
+<!-- # logo: "/assets/logo.svg" -->
+<!-- # coverTitleHeight: 36vh -->
+<!-- # coverSubtitleHeight: 12vh -->
+<!-- # coverMetaHeight: 10vh -->
+<!-- # titleMax: 88 -->
 
 ---
 layout: bullets-fit
@@ -61,6 +64,8 @@ title: Day 4 — Metaprogramming & Practice
 <!-- # titleMin: 28 -->
 <!-- # titleMax: 60 -->
 <!-- # titlePad: 8 -->
+<!-- # subtitle: "Advanced techniques" -->
+<!-- # subtitleHeight: 6vh -->
 
 - Metaclasses
 - getattr / getattribute
