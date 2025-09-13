@@ -1,4 +1,33 @@
-.slidev-layout h1 { font-size: clamp(2.8rem, 6.5vmin, 5.2rem); line-height: 1.08; font-weight: 800; letter-spacing: -0.02em; }
-.slidev-layout h2 { font-size: clamp(2.2rem, 5vmin, 3.6rem); line-height: 1.12; font-weight: 800; }
-.slidev-layout h3 { font-size: clamp(1.6rem, 3.6vmin, 2.4rem); line-height: 1.18; font-weight: 700; }
+/* ===== Global knobs (one place to tune defaults) ===== */
+:root {
+  /* Optional suggestion: change this to adjust the default title area once for the whole deck */
+  --amit-title-height: 10vh;
+}
+
+/* Headings: “Keynote big” but still classy.
+   Note: the layout’s <h1> uses .auto-title { font-size: 1em } to neutralize these sizes
+   so AutoFit can govern the displayed size. */
+.slidev-layout h1{
+  font-size: clamp(2.8rem, 6.5vmin, 5.2rem);
+  line-height: 1.08;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.slidev-layout h2{
+  font-size: clamp(2.2rem, 5vmin, 3.6rem);
+  line-height: 1.12;
+  font-weight: 800;
+}
+.slidev-layout h3{
+  font-size: clamp(1.6rem, 3.6vmin, 2.4rem);
+  line-height: 1.18;
+  font-weight: 700;
+}
+
+/* Utility: vertical center */
+.center-v {
+  display: grid;
+  height: 100%;
+  place-content: center;
+}
 

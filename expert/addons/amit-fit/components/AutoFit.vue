@@ -66,7 +66,8 @@ watchEffect(schedule)
 :slotted(ul), :slotted(ol) {
   max-width: 90vw;
   word-break: break-word;
-  margin: 0;            /* NEW: remove default margins */
-  padding-left: 1.25rem;/* keep bullets indented nicely */
+  margin: 0;              /* important: no extra top/bottom margin */
+  padding-left: 1.25rem;  /* nice bullet indent */
 }
 </style>
+
