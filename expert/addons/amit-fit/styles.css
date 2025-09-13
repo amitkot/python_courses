@@ -1,24 +1,35 @@
-/* ===== Global knobs (one place to tune defaults) ===== */
+/* ===== Global knobs (tweak once for the whole deck) ===== */
 :root {
-  /* Optional suggestion: change this to adjust the default title area once for the whole deck */
-  --amit-title-height: 10vh;
+  --cover-title-height: 32vh;
+  --cover-subtitle-height: 14vh;
+  --cover-meta-height: 12vh;
 }
 
-/* Headings: “Keynote big” but still classy.
-   Note: the layout’s <h1> uses .auto-title { font-size: 1em } to neutralize these sizes
-   so AutoFit can govern the displayed size. */
-.slidev-layout h1{
+:root {
+  --amit-title-height: 10vh;   /* default title row height */
+  --amit-subtitle-height: 6vh; /* default subtitle row height (only if used) */
+  --amit-safe-x: 6vw;          /* left/right safe padding */
+  --amit-bullet-indent: 1.25rem;
+  --amit-max-content: 80ch;    /* guard line length on projectors */
+}
+
+/* Ensure the default layout container always fills the viewport */
+.slidev-layout.default { height: 100%; }
+
+/* Headings (theme-wide).
+   Note: the layout neutralizes the title's font-size to 1em so AutoFit controls it. */
+.slidev-layout h1 {
   font-size: clamp(2.8rem, 6.5vmin, 5.2rem);
   line-height: 1.08;
   font-weight: 800;
   letter-spacing: -0.02em;
 }
-.slidev-layout h2{
+.slidev-layout h2 {
   font-size: clamp(2.2rem, 5vmin, 3.6rem);
   line-height: 1.12;
   font-weight: 800;
 }
-.slidev-layout h3{
+.slidev-layout h3 {
   font-size: clamp(1.6rem, 3.6vmin, 2.4rem);
   line-height: 1.18;
   font-weight: 700;
