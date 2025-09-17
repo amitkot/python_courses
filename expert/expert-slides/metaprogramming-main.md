@@ -2,7 +2,6 @@
 title: "Python Metaprogramming & Metaclasses — v4 (demo-rich)"
 info: "Single-concept slides with live code demos + presenter notes"
 theme: default
-highlighter: shiki
 lineNumbers: false
 fonts:
   sans: Inter
@@ -32,8 +31,11 @@ Goal: students see string-based introspection. Tie to dynamic loading/config.
 ## `getattr` — demo
 
 ```py
-class Box: pass
-b = Box(); b.x = 10
+class Box:
+    pass
+b = Box()
+b.x = 10
+
 print(getattr(b, "x"))         # 10
 print(getattr(b, "missing", 0))# 0
 ```
@@ -53,7 +55,9 @@ Useful for loading dict configs into objects.
 ## `setattr` / `delattr` — demo
 
 ```py
-class C: pass
+class C:
+    pass
+
 c = C()
 setattr(c, "mode", "debug")
 print(c.mode)     # "debug"
@@ -75,10 +79,55 @@ vars(obj) ≈ obj.__dict__ (if writable); dir(obj) for discoverability.
 ## `vars` / `dir` — demo
 
 ```py
-class User: pass
-u = User(); u.name = "Ada"
+class User:
+    pass
+
+u = User()
+u.name = "Ada"
 print(vars(u))     # {'name': 'Ada'}
+print(u.__dict__)  # {'name': 'Ada'}
 print("name" in dir(u))
+```
+
+---
+
+## `vars` / `dir` — demo
+
+```py
+class User:
+    pass
+
+u = User()
+u.name = "Ada"
+dir(u)
+# ['__class__',
+#  '__delattr__',
+#  '__dict__',
+#  '__dir__',
+#  '__doc__',
+#  '__eq__',
+#  '__format__',
+#  '__ge__',
+#  '__getattribute__',
+#  '__getstate__',
+#  '__gt__',
+#  '__hash__',
+#  '__init__',
+#  '__init_subclass__',
+#  '__le__',
+#  '__lt__',
+#  '__module__',
+#  '__ne__',
+#  '__new__',
+#  '__reduce__',
+#  '__reduce_ex__',
+#  '__repr__',
+#  '__setattr__',
+#  '__sizeof__',
+#  '__str__',
+#  '__subclasshook__',
+#  '__weakref__',
+#  'name']
 ```
 
 ---
@@ -121,9 +170,13 @@ We will use this for "Dynamic DTOs from JSON schema".
 ## `type(name,bases,ns)` — demo
 
 ```py
-def shout(self): return self.msg + "!"
+def shout(self):
+    return self.msg + "!"
+
 Greeter = type("Greeter", (object,), {"msg": "hi", "shout": shout})
-g = Greeter(); print(g.shout())  # hi!
+
+g = Greeter()
+print(g.shout())  # hi!
 ```
 
 ---
@@ -144,7 +197,7 @@ Explain: in tests or codegen you may have a schema (fields/types). Build DTO cla
 schema = {"name": str, "age": int}
 
 def make_dto(name, schema):
-    ns = {"__annotations__": schema.copy()}
+    ns = {"__annotations__": schema.copy()}     # type annotations
     # Optional: __init__ from annotations
     def __init__(self, **data):
         for k, t in schema.items():
@@ -160,58 +213,80 @@ u = UserDTO(name="Ada", age=36)
 
 ---
 
-## Class creation protocol — concept
-
-class body ➜ `__prepare__` ➜ `__new__` ➜ `__init__`
-
-<!--
-Next slides split steps.
--->
-
----
-
 ## Resolve metaclass — concept
 
 default: `type`
 
 ---
 
-## `__prepare__` — concept
+## Metaclass `__new__`
 
-Return mapping for class body
-
-<!--
-Should be on the metaclass as a @classmethod. Used to customize the namespace dict.
--->
+Called when defining a new class, allocates and returns the class object
 
 ---
 
-## `__prepare__` — demo
+## Metaclass `__new__`
 
-```py
-class CollectFields(type):
-    @classmethod
-    def __prepare__(mcls, name, bases, **kw):
-        class NS(dict):
-            def __setitem__(self, k, v):
-                if k.islower():  # forbid lowercase constants
-                    pass
-                super().__setitem__(k, v)
-        return NS()
+```python
+class MyMeta(type):
+    def __new__(mcls, name, bases, ns):
+        print("--- Starting MyMeta __new__()")
+        print(f"__new__: cls is {mcls}")
+        print(f"__new__: name is {name}")
+        print(f"__new__: bases is {bases}")
+        print(f"__new__: ns is {ns}")
+        return super().__new__(mcls, name, bases, ns)
 
-    def __new__(mcls, name, bases, ns, **kw):
-        ns["FIELDS"] = [k for k in ns.keys() if k.isupper()]
-        return super().__new__(mcls, name, bases, dict(ns))
+class MyBase: pass
 
-class Model(metaclass=CollectFields):
-    ID = 0
-    NAME = "N/A"
-# Model.FIELDS == ["ID", "NAME"]
+class MyClass(MyBase, metaclass=MyMeta):
+    def __init__(self, a, b): pass
 ```
 
-**Where does `__prepare__` live?** On the **metaclass**.
-**What is it good for?** Enforcing rules during class body execution, collecting names, validating duplicates.
+```python
+--- Starting MyMeta __new__()
+__new__: mcls is <class '__main__.MyMeta'>
+__new__: name is MyClass
+__new__: bases is (<class '__main__.MyBase'>,)
+__new__: ns is {'__module__': '__main__', '__qualname__': 'MyClass', '__init__': <function MyClass.__init__ at 0x1074470e0>}
+```
 
+---
+
+## Metaclass `__init__`
+
+Called when defining a new class, receives an allocated class and sets up its attributes (functions, class variables)
+
+---
+
+## Metaclass `__init__`
+
+```python
+class MyMeta(type):
+    def __init__(mcls, name, bases, ns):
+        print("--- Starting MyMeta __init__()")
+        print(f"__init__: mcls is {mcls}")
+        print(f"__init__: name is {name}")
+        print(f"__init__: bases is {bases}")
+        print(f"__init__: ns is {ns}")
+        super().__init__(name, bases, ns)
+
+class MyBase: pass
+
+class MyClass(MyBase, metaclass=MyMeta):
+    def __init__(self, a, b): pass
+```
+
+```python
+--- Starting MyMeta __init__()
+__init__: mcls is <class '__main__.MyClass'>
+__init__: name is MyClass
+__init__: bases is (<class '__main__.MyBase'>,)
+__init__: ns is {'__module__': '__main__', '__qualname__': 'MyClass', '__init__': <function MyClass.__init__ at 0x1074470e0>}
+```
+
+---
+hide: true
 ---
 
 ## Execute body — concept
@@ -219,11 +294,15 @@ class Model(metaclass=CollectFields):
 Python fills mapping by executing the class body
 
 ---
+hide: true
+---
 
 ## `__new__` — concept
 
 Transform namespace ➜ create class
 
+---
+hide: true
 ---
 
 ## `__new__` — demo (inject repr/init/slots)
@@ -261,10 +340,54 @@ p = Point(2, 3); repr(p)
 
 ## `__init__` (metaclass) — concept
 
-Finalize class object
+- Finalize class object
+- Good for light registration or consistency checks. Keep heavy transforms in __new__.
+
+---
+
+## Class creation protocol — concept
+
+class body ➜ `__prepare__` ➜ `__new__` ➜ `__init__`
+
+---
+
+## `__prepare__` — concept
+
+- If present, `__prepare__` is called when defining a new class.
+- Should be on the metaclass as a `@classmethod`.
+- Used to customize the class namespace dict.
+
+---
+
+## `__prepare__` — demo
+
+```py
+class CollectFields(type):
+    @classmethod
+    def __prepare__(mcls, name, bases, **kw):
+        """Will be used in __new__"""
+        class NS(dict):
+            def __setitem__(self, k, v):
+                if k.islower():  # forbid lowercase constants
+                    pass
+                super().__setitem__(k, v)
+        return NS()
+
+    def __new__(mcls, name, bases, ns, **kw):
+        ns["FIELDS"] = [k for k in ns.keys() if k.isupper()]
+        return super().__new__(mcls, name, bases, dict(ns))
+
+class Model(metaclass=CollectFields):
+    ID = 0
+    NAME = "N/A"
+# Model.FIELDS == ["ID", "NAME"]
+```
+
+**Where does `__prepare__` live?** On the **metaclass**.
+**What is it good for?** Enforcing rules during class body execution, collecting names, validating duplicates.
 
 <!--
-Good for light registration or consistency checks. Keep heavy transforms in __new__.
+Next slides split steps.
 -->
 
 ---
@@ -286,16 +409,21 @@ When to choose which?
 ```py
 # Decorator adds a .debug() method post-creation
 def add_debug(cls):
-    def debug(self): return vars(self)
-    cls.debug = debug; return cls
+    def debug(self):
+        return vars(self)
+    cls.debug = debug
+    return cls
 
 @add_debug
 class A: pass
+```
 
+```py
 # Metaclass enforces a class-level invariant at creation
 class Named(type):
     def __new__(mcls, name, bases, ns, **kw):
-        if "NAME" not in ns: raise TypeError("Must define NAME")
+        if "NAME" not in ns:
+            raise TypeError("Must define NAME")
         return super().__new__(mcls, name, bases, ns)
 
 class B(metaclass=Named):
@@ -334,11 +462,15 @@ class Add(Command, name="add"): pass
 ```
 
 ---
+hide: true
+---
 
 ## CLI Image Plugins — concept
 
 Registry resolves command ➜ class ➜ `apply(image, **opts)`
 
+---
+hide: true
 ---
 
 ## CLI Image Plugins — demo (decorator + metaclass)
@@ -383,11 +515,15 @@ assert s1 is s2
 ```
 
 ---
+hide: true
+---
 
 ## Debugging — concept
 
 `inspect.getsource()` and `dis.dis()`
 
+---
+hide: true
 ---
 
 ## Debugging — demo
@@ -405,38 +541,7 @@ dis.dis(bar)
 
 ---
 
-## Lab 1 🧪
-
-Plugin registry (Decorator → Metaclass)
-
-<!--
-Timebox: ~20m; path: labs/labA_plugin_registry/
--->
-
----
-
-## Lab 2 🧪
-
-`StrictStruct` (slots/init/repr/type checks)
-
-<!--
-Timebox: ~30m; path: labs/labB_strictstruct/
--->
-
----
-
-## Lab 3 🧪
-
-Multiton cache via `__call__`
-
-<!--
-Timebox: ~25m; path: labs/labC_multiton/
--->
-
----
-
 ## Summary
 
 - Small tools first (decorator/`__init_subclass__`), metaclasses when you need creation/instantiation control.
 - Patterns: registry, strict struct, singleton/multiton.
-- Debug: inspect & disassemble to see what's happening.

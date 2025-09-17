@@ -321,7 +321,7 @@ def is_data_descriptor(obj: object) -> bool:
 
 ---
 
-# Exercise (in class)
+# Lab
 
 - Convert 3 `@property` validators into one `Descriptor` class
 - Add `__set_name__`
@@ -334,3 +334,17 @@ def is_data_descriptor(obj: object) -> bool:
 - Descriptors = precise control of attribute semantics
 - They power many Python features you already use
 - Great tool for reusable, framework‑level behaviors
+
+---
+
+# Questions
+
+---
+layout: center
+class: text-center
+---
+
+# Thanks!
+
+- <div class="text-xl font-semibold">Amit Kotlovski</div>
+- <div class="text-base"><a href="mailto:amit@amitkot.com">amit@amitkot.com</a></div>
